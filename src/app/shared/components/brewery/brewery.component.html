@@ -1,0 +1,33 @@
+<div class="card brewery">
+    <div class="card-block">
+        <strong>{{ brewery.name }}</strong><br />
+        <span class="brewery-type">{{ brewery.brewery_type }}</span><br />
+        @if (brewery.address_1) {
+            {{ brewery.address_1 }}<br />
+        }
+        @if (brewery.address_2) {
+            {{ brewery.address_2 }}<br />
+        }
+        @if (brewery.address_3) {
+            {{ brewery.address_3 }}<br />
+        }
+        @if (brewery.city) {
+            {{ brewery.city }},
+        }
+        @if (brewery.state) {
+            {{ brewery.state }} 
+        }
+        @if (brewery.postal_code) {
+            {{ brewery.postal_code }}<br />
+        }
+    </div>
+    <div class="card-footer">
+        <cds-icon title="Toggle Favorite" shape="star" [solid]="brewery.favorite" (click)="toggleFavorite(brewery)"></cds-icon>
+        @if (brewery.address_1 && brewery.city && brewery.state && brewery.postal_code) {
+            <a target="_blank" rel="noopener noreferrer" [href]="'https://maps.google.com/maps?daddr=' + brewery.address_1 + ', ' + brewery.city + ', ' + brewery.state + ' ' + brewery.postal_code" class="btn btn-link btn-sm">Directions</a>
+        }
+        @if (brewery.website_url) {
+            <a target="_blank" rel="noopener noreferrer" [href]="brewery.website_url" class="btn btn-link btn-sm">Website</a>
+        }
+    </div>
+</div>

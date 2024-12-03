@@ -1,0 +1,60 @@
+<form clrForm clrLayout="vertical" [formGroup]="form" (ngSubmit)="onSubmit()">
+	<clr-input-container style="margin-top: 0">
+		<label for="name">Name</label>
+		<input clrInput id="name" formControlName="name" />
+	</clr-input-container>
+
+	<clr-select-container>
+		<label for="state">State</label>
+		<select clrSelect id="state" formControlName="state" (change)="onChangeState($event)">
+			<option value="">All States</option>
+            @if (states$ | async; as states) {
+                @for (state of states; track state) {
+                    <option [value]="state | titlecase">{{ state | titlecase }}</option>
+                }
+            }
+		</select>
+	</clr-select-container>
+
+    <clr-select-container>
+		<label for="city">City</label>
+		<select clrSelect id="city" formControlName="city">
+			<option value="">All Cities</option>
+            @if (citiesByState$ | async; as citiesByState) {
+                @for (entry of citiesByState; track entry.city) {
+                    <option [value]="entry.city | titlecase">{{ entry.city | titlecase }}</option>
+                }
+            }
+		</select>
+	</clr-select-container>
+
+	<clr-select-container>
+		<label for="brewery_type">Type</label>
+		<select clrSelect id="brewery_type" formControlName="brewery_type">
+            <option value="" selected>All Types</option>
+            @if (types$ | async; as types) {
+                @for (type of types; track type) {
+                    <option [value]="type">{{ type | titlecase }}</option>
+                }
+            }
+		</select>
+	</clr-select-container>
+
+	<p>
+		<button type="submit" class="btn btn-block btn-primary">Search</button>
+	</p>
+
+    <p>
+        <button type="button" class="btn btn-block btn" (click)="breweriesNearMe()">Find Breweries Near Me</button>
+    </p>
+</form>
+
+<clr-modal [(clrModalOpen)]="geoLocationError">
+    <h3 class="modal-title">Find Breweries Near Me</h3>
+    <div class="modal-body">
+        <p>{{ geoLocationErrorMsg }}</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="geoLocationError = false">Close</button>
+    </div>
+</clr-modal>

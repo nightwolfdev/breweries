@@ -1,1 +1,185 @@
-/* You can add global styles to this file, and also import other style files */
+$pastel-yellow: #FFF897;
+$shandy: #FAE96F;
+$golden-poppy: #F6C101;
+$ryb-orange: #EC9D00;
+$harvest-gold: #DF8D03;
+$alloy-orange: #C96E12;
+$white: #FFFFFF;
+
+.content-container {
+    background-color: $pastel-yellow;
+}
+
+.header {
+    &.header-2 {
+        background-color: $harvest-gold;
+        color: $pastel-yellow;
+    }
+
+    .branding {
+        .title {
+            color: $white;
+
+            &:hover {
+                color: $pastel-yellow;
+            }
+        }
+
+        img {
+            height: 30px;
+            transition: transform 0.3s ease;
+            width: auto;
+        }
+
+        &:active img,
+        &:hover img {
+            transform: rotate(-15deg);
+        }
+    }
+
+    .header-nav {
+        &::before {
+            background-color: $pastel-yellow;
+        }
+
+        .nav-link {
+            color: $white;
+
+            &:hover,
+            &.active {
+                color: $pastel-yellow;
+            }
+        }
+    }
+}
+
+.clr-form {
+    background-color: $white;
+    border: 1px solid $harvest-gold;
+    border-radius: 4px;
+    padding: 1rem;
+
+    .clr-control-label {
+        color: $alloy-orange;
+    }
+
+    .clr-input {
+        border-bottom-color: $golden-poppy;
+
+        &:not([readonly]) {
+            background: transparent;
+        
+            &:focus {
+                border-bottom-color: $alloy-orange;
+            }
+        }
+    }
+
+    .clr-select-wrapper {
+        select {
+            &:not([multiple]) {
+                background: transparent;
+                border-bottom-color: $golden-poppy;
+
+                &:focus {
+                    border-bottom-color: $alloy-orange;
+                }
+            }
+
+            option {
+                &:hover {
+                    background-color: $alloy-orange;
+                    color: $white;
+                }
+            }
+        }
+    }
+}
+
+.card {
+    background-color: $white;
+    border-color: $harvest-gold;
+
+    .card-block {
+        border-bottom-color: $white;
+        min-height: 130px;
+    }
+
+    &::before {
+        background-image: url('../public/img/logo.png');
+        background-repeat: no-repeat;
+        content: '';
+        height: 100px;
+        opacity: 0.1;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        transition: transform 0.3s ease;
+        width: 91px;
+    }
+
+    &:active::before,
+    &:hover::before {
+        transform: rotate(-15deg);
+    }
+}
+
+.brewery {
+    .card-footer {
+        align-items: center;
+        justify-content: space-evenly;
+
+        cds-icon {
+            color: $alloy-orange;
+
+            &:hover {
+                color: $ryb-orange;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .brewery-type {
+        font-size: 0.8em;
+        text-transform: uppercase;
+    }
+}
+
+.btn {
+    background-color: $white;
+    border-color: $alloy-orange;
+    color: $alloy-orange;
+
+    &:not(.btn-link):hover:not(.btn-primary):not(.btn-danger) {
+        background-color: $white;
+        border-color: $harvest-gold;
+        color: $harvest-gold;
+    }
+
+    &.btn-primary {
+        background-color: $alloy-orange;
+        border-color: $alloy-orange;
+    
+        &:not(:disabled):hover {
+            background-color: $harvest-gold;
+            border-color: $harvest-gold;
+        }
+    }
+}
+
+a:not(.btn, .nav-link, .dropdown-item, .alert-action, .badge, .clr-treenode-link):link,
+a:not(.btn, .nav-link, .dropdown-item, .alert-action, .badge, .clr-treenode-link):visited,
+.btn.btn-link {
+    color: $alloy-orange;
+
+    &:hover {
+        color: $ryb-orange;
+    }
+}
+
+.clr-control-container,
+.clr-input,
+.clr-select-wrapper,
+.clr-select {
+    width: 100%
+}

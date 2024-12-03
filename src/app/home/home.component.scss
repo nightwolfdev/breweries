@@ -1,0 +1,16 @@
+h1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    img {
+        height: 60px;
+        transition: transform 0.3s ease;
+        width: auto;
+    }
+
+    &:active img,
+    &:hover img {
+        transform: rotate(-15deg);
+    }
+}

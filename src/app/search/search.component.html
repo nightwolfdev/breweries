@@ -1,0 +1,88 @@
+@if (paginatedSearchResults$ | async; as searchResults) {
+
+    @if (!loadingError) {
+    
+        <h1>
+            @if (queryParams.brewery_type) {
+                {{ queryParams.brewery_type | titlecase }}
+            }
+            Breweries
+            @if (queryParams.dist) {
+                Near Me
+            }
+            @if (queryParams.name) {
+                named {{ queryParams.name }}
+            }
+            @if (queryParams.city || queryParams.state) {
+                in
+            }
+            @if (queryParams.city) {
+                {{ queryParams.city | titlecase }},
+            }
+            @if (queryParams.state) {
+                {{ queryParams.state | titlecase }}
+            }
+        </h1>
+
+        @if (searchResults.length > 0) {
+
+            <ng-template #pagination>
+                <div class="clr-row clr-align-items-center clr-justify-content-center" style="margin-top: 1.2rem">
+                    <div class="clr-col-auto">
+                        @if ((currentPage$ | async) !== 1) {
+                            <button class="btn btn-link btn-sm" (click)="previousPage()">&laquo; Previous</button>
+                        }
+                    </div>
+                    <div class="clr-col-auto text-center">
+                        {{ start | number }} - {{ end | number }} of {{ total | number }} breweries
+                    </div>
+                    <div class="clr-col-auto text-right">
+                        @if ((currentPage$ | async) !== totalPages) {
+                            <button class="btn btn-link btn-sm" (click)="nextPage()">Next &raquo;</button>
+                        }
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-container *ngTemplateOutlet="pagination"></ng-container>
+
+            <div class="clr-row">
+                @for (brewery of searchResults; track brewery.id) {
+                    <div class="clr-col-sm-12 clr-col-md-6 clr-col-lg-4 clr-col-xl-3">
+                        <brew-brewery [brewery]="brewery"></brew-brewery>
+                    </div>
+                }
+            </div>
+            
+            <ng-container *ngTemplateOutlet="pagination"></ng-container>
+
+        } @else { 
+            <p>No breweries found.</p>
+        }
+
+    }
+
+} @else {
+
+    @if (!loadingError) {
+
+        <brew-loading text="Searching"></brew-loading>
+        
+    } @else {
+
+        <p>
+            <clr-alert [clrAlertClosable]="false" [clrAlertType]="'danger'">
+                <clr-alert-item>
+                    <span class="alert-text">
+                        There was an issue loading brewery data. Please try again.
+                    </span>
+                    <div class="alert-actions">
+                        <button class="btn btn-danger btn-sm" (click)="getBreweries()" style="margin: 0">Retry</button>
+                    </div>
+                </clr-alert-item>
+            </clr-alert>
+        </p>
+
+    }
+
+}

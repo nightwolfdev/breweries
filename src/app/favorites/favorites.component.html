@@ -1,0 +1,48 @@
+@if (favorites$ | async; as favorites) {
+
+    @if (!loadingError) {
+
+        <h1>Favorites</h1>
+
+        @if (favorites.length > 0) {
+
+            <p>{{ favorites.length }} brewer{{ favorites.length === 1 ? 'y' : 'ies' }}.</p>
+
+            <div class="clr-row">
+                @for (brewery of favorites; track brewery.id) {
+                    <div class="clr-col-sm-12 clr-col-md-6 clr-col-lg-4 clr-col-xl-3">
+                        <brew-brewery [brewery]="brewery"></brew-brewery>
+                    </div>
+                }
+            </div>        
+
+        } @else {
+            <p>No breweries have been marked as favorites yet.</p>
+        }
+
+    }
+
+} @else {
+
+    @if (!loadingError) {
+
+        <brew-loading text="Loading"></brew-loading>
+        
+    } @else {
+
+        <p>
+            <clr-alert [clrAlertClosable]="false" [clrAlertType]="'danger'">
+                <clr-alert-item>
+                    <span class="alert-text">
+                        There was an issue loading brewery data. Please try again.
+                    </span>
+                    <div class="alert-actions">
+                        <button class="btn btn-danger btn-sm" (click)="getBreweries()" style="margin: 0">Retry</button>
+                    </div>
+                </clr-alert-item>
+            </clr-alert>
+        </p>
+
+    }
+
+}

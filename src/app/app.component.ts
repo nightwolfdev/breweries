@@ -1,12 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { ClrLayoutModule } from '@clr/angular';
 
 @Component({
-  selector: 'brew-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    selector: 'brew-root',
+    imports: [ClrLayoutModule, CommonModule, RouterModule, RouterOutlet],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'breweries';
+    constructor(private router: Router) {
+        const route = localStorage.getItem('route');
+
+        if (route) {
+            localStorage.removeItem('route');
+            this.router.navigate([route]);
+        }
+    }
 }
