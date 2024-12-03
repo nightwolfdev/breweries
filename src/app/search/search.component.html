@@ -28,15 +28,15 @@
 
             <ng-template #pagination>
                 <div class="clr-row clr-align-items-center clr-justify-content-center" style="margin-top: 1.2rem">
-                    <div class="clr-col-auto">
+                    <div class="clr-col-sm-12 clr-col-md-auto text-center">
                         @if ((currentPage$ | async) !== 1) {
                             <button class="btn btn-link btn-sm" (click)="previousPage()">&laquo; Previous</button>
                         }
                     </div>
-                    <div class="clr-col-auto text-center">
+                    <div class="clr-col-sm-12 clr-col-md-auto text-center">
                         {{ start | number }} - {{ end | number }} of {{ total | number }} breweries
                     </div>
-                    <div class="clr-col-auto text-right">
+                    <div class="clr-col-sm-12 clr-col-md-auto text-center">
                         @if ((currentPage$ | async) !== totalPages) {
                             <button class="btn btn-link btn-sm" (click)="nextPage()">Next &raquo;</button>
                         }
