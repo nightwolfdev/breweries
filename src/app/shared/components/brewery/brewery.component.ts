@@ -19,7 +19,7 @@ export class BreweryComponent {
         ClarityIcons.addIcons(starIcon);
     }
 
-    toggleFavorite(brewery: Brewery) {
+    toggleFavorite(brewery: Brewery): void {
         brewery.favorite = !brewery.favorite;
         this.breweriesSvc.updateFavorite(brewery);
     }

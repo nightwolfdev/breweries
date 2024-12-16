@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ClrAlertModule } from '@clr/angular';
 
-import { Observable, Subscription, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { BreweryComponent, LoadingComponent } from '../shared/components';
+import { BreweriesDirective } from '../shared/directives';
 import { Brewery } from '../shared/interfaces';
 import { BreweriesService } from '../shared/services';
 
@@ -15,42 +15,17 @@ import { BreweriesService } from '../shared/services';
     templateUrl: './favorites.component.html',
     styleUrl: './favorites.component.scss'
 })
-export class FavoritesComponent implements OnDestroy, OnInit {
-
-    private subscription = new Subscription();
+export class FavoritesComponent extends BreweriesDirective implements OnInit {
 
     favorites$: Observable<Brewery[]>;
-    loading: boolean;
-    loadingError: boolean;
 
-    constructor(private breweriesSvc: BreweriesService) { }
+    constructor(breweriesSvc: BreweriesService) {
+        super(breweriesSvc);
+    }
 
-    ngOnInit() {
+    override ngOnInit(): void {
+        super.ngOnInit();
         this.favorites$ = this.breweriesSvc.favorites$;
-        this.getBreweries();
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-
-    getBreweries() {
-        this.loading = true;
-        this.loadingError = false;
-
-        const subscription = this.breweriesSvc
-            .getBreweries()
-            .pipe(
-                tap(() => this.loading = false),
-                catchError(error => {
-                    this.loading = false;
-                    this.loadingError = true;
-                    return throwError(() => new Error(error.message));
-                })
-            )
-            .subscribe();
-
-        this.subscription.add(subscription);
     }
 
 }

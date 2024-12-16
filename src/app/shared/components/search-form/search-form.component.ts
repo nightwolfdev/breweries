@@ -29,7 +29,7 @@ export class SearchFormComponent implements OnInit {
         private router: Router
     ) { }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.buildForm();
         this.citiesByState$ = this.breweriesSvc.citiesByState$;
         this.states$ = this.breweriesSvc.states$;
@@ -69,7 +69,7 @@ export class SearchFormComponent implements OnInit {
         return searchCriteria;
     }
 
-    breweriesNearMe() {
+    breweriesNearMe(): void {
         this.geoLocationError = false;
         this.geoLocationErrorMsg = '';
 
@@ -98,7 +98,7 @@ export class SearchFormComponent implements OnInit {
         }
     }
 
-    onChangeState(event: Event) {
+    onChangeState(event: Event): void {
         const state = (event.target as HTMLSelectElement).value;
         const cityControl = this.form.get('city');
 
@@ -111,7 +111,7 @@ export class SearchFormComponent implements OnInit {
         this.breweriesSvc.changeSelectedState(state);
     }
 
-    onSubmit() {
+    onSubmit(): void {
         const queryParams = this.getSearchCriteria();
         this.router.navigate(['/search'], { queryParams });
     }

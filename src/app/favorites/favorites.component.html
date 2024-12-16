@@ -6,7 +6,7 @@
 
         @if (favorites.length > 0) {
 
-            <p>{{ favorites.length }} brewer{{ favorites.length === 1 ? 'y' : 'ies' }}.</p>
+            <p>{{ favorites.length }} favorite brewer{{ favorites.length === 1 ? 'y' : 'ies' }}</p>
 
             <div class="clr-row">
                 @for (brewery of favorites; track brewery.id) {

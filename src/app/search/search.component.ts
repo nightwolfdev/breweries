@@ -3,10 +3,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClrAlertModule } from '@clr/angular';
 
-import { BehaviorSubject, combineLatest, Observable, Subscription, throwError } from 'rxjs';
-import { catchError, filter, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 
 import { BreweryComponent, LoadingComponent } from '../shared/components';
+import { BreweriesDirective } from '../shared/directives';
 import { Brewery, SearchCriteria } from '../shared/interfaces';
 import { BreweriesService } from '../shared/services';
 
@@ -16,13 +17,10 @@ import { BreweriesService } from '../shared/services';
     templateUrl: './search.component.html',
     styleUrl: './search.component.scss',
 })
-export class SearchComponent implements OnDestroy, OnInit {
-    private subscription = new Subscription();
+export class SearchComponent extends BreweriesDirective implements OnDestroy, OnInit {
 
     currentPage$ = new BehaviorSubject<number>(1);
     end: number;
-    loading: boolean;
-    loadingError: boolean;
     paginatedSearchResults$: Observable<Brewery[]>;
     perPage = 50;
     searchResults$: Observable<Brewery[] | undefined>;
@@ -32,13 +30,15 @@ export class SearchComponent implements OnDestroy, OnInit {
     queryParams: SearchCriteria;
 
     constructor(
-        private breweriesSvc: BreweriesService,
+        breweriesSvc: BreweriesService,
         private route: ActivatedRoute
-    ) { }
+    ) {
+        super(breweriesSvc);
+    }
 
-    ngOnInit() {
+    override ngOnInit(): void {
+        super.ngOnInit();
         this.getRouteParams();
-        this.getBreweries();
 
         this.searchResults$ = this.breweriesSvc.searchResults$.pipe(
             filter(breweries => !!breweries),
@@ -62,10 +62,6 @@ export class SearchComponent implements OnDestroy, OnInit {
         );
     }
 
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-
     private getRouteParams(): void {
         const subscription = this.route.queryParams.pipe(
             tap(queryParams => {
@@ -77,33 +73,11 @@ export class SearchComponent implements OnDestroy, OnInit {
         this.subscription.add(subscription);
     }
 
-    getBreweries() {
-        this.loading = true;
-        this.loadingError = false;
-
-        const subscription = this.breweriesSvc
-            .getBreweries()
-            .pipe(
-                tap(() => {
-                    this.loading = false;
-                    this.breweriesSvc.changeSearchCriteria(this.queryParams);
-                }),
-                catchError(error => {
-                    this.loading = false;
-                    this.loadingError = true;
-                    return throwError(() => new Error(error.message));
-                })
-            )
-            .subscribe();
-
-        this.subscription.add(subscription);
-    }
-
-    nextPage() {
+    nextPage(): void {
         this.currentPage$.next(this.currentPage$.getValue() + 1);
     }
 
-    previousPage() {
+    previousPage(): void {
         if (this.currentPage$.getValue() > 1) {
             this.currentPage$.next(this.currentPage$.getValue() - 1);
         }
