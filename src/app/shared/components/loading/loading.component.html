@@ -1,4 +1,6 @@
-<div style="margin-top: 2rem; width: 200px">
-    <div style="margin-bottom: 0.5rem">Brewing, please wait...</div>
-    <clr-progress-bar [clrValue]="loadingProgress" clrLabeled></clr-progress-bar>
-</div>
+@if (loadingProgress$ | async; as loadingProgress) {
+    <div style="margin-top: 2rem; width: 200px">
+        <div style="margin-bottom: 0.5rem">Brewing, please wait...</div>
+        <clr-progress-bar [clrValue]="loadingProgress" clrLabeled></clr-progress-bar>
+    </div>
+}

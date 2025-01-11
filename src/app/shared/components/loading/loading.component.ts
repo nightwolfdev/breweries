@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ClrProgressBarModule } from '@clr/angular';
 
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { BreweriesService } from '../../services';
 
@@ -12,18 +12,12 @@ import { BreweriesService } from '../../services';
     templateUrl: './loading.component.html',
     styleUrl: './loading.component.scss'
 })
-export class LoadingComponent implements OnDestroy, OnInit {
-    private subscription = new Subscription();
-    loadingProgress: number;
+export class LoadingComponent implements OnInit {
+    loadingProgress$: Observable<number>;
 
     constructor(private breweriesSvc: BreweriesService) { }
 
     ngOnInit() {
-        const subscription = this.breweriesSvc.loadingProgress$.subscribe(loadingProgress => this.loadingProgress = loadingProgress);
-        this.subscription.add(subscription);
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.loadingProgress$ = this.breweriesSvc.loadingProgress$;
     }
 }
