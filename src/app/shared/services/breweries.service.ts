@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 import { distinct, expand, filter, map, mergeMap, reduce, switchMap, take, tap, toArray } from 'rxjs/operators';
 
-import { Brewery, SearchCriteria, TypeDescription } from '../interfaces';
+import { Brewery, Meta, SearchCriteria, TypeDescription } from '../interfaces';
 
 @Injectable({
     providedIn: 'root',
@@ -13,6 +13,7 @@ export class BreweriesService {
     private baseApi = 'https://api.openbrewerydb.org/v1/breweries';
     private breweries = new BehaviorSubject<Brewery[] | null>(null);
     private breweries$ = this.breweries.asObservable();
+    private loadingProgress = new BehaviorSubject<number>(0);
     private localStorageFavorites: string[];
     private localStorageKey = 'brewery-favorites';
     private perPage = 200;
@@ -43,6 +44,8 @@ export class BreweriesService {
         // take, mergeMap, and toArray were not used because we want to keep observable alive in case user removes a favorite
         map(breweries => breweries.filter(brewery => this.localStorageFavorites.includes(brewery.id)))
     );
+
+    loadingProgress$ = this.loadingProgress.asObservable();
 
     searchResults$ = this.searchCriteria.asObservable().pipe(
         switchMap(searchCriteria => {
@@ -124,6 +127,10 @@ export class BreweriesService {
         return this.httpSvc.get<Brewery[]>(`${this.baseApi}?by_country=United+States&page=${page}&per_page=${this.perPage}`);
     }
 
+    private getMeta(): Observable<Meta> {
+        return this.httpSvc.get<Meta>(`${this.baseApi}/meta?by_country=United+States&per_page=${this.perPage}`);
+    }
+
     private buildFavorites(breweries: Brewery[]) {
         const favoritesStr = localStorage.getItem(this.localStorageKey);
         const favorites = favoritesStr ? JSON.parse(favoritesStr) : [];
@@ -155,18 +162,33 @@ export class BreweriesService {
             return of(breweries);
         }
 
-        return this.getData(page).pipe(
-            expand(response => {
-                if (response.length === this.perPage) {
-                    page = page + 1;
-                    return this.getData(page);
-                }
+        return this.getMeta().pipe(
+            switchMap(meta => {
+                // Start loading progress at zero
+                this.loadingProgress.next(0);
 
-                return EMPTY;
-            }), // Get all paginated data
-            reduce((acc, current) => acc.concat(current), [] as Brewery[]), // Build array of breweries
-            map(breweries => this.buildFavorites(breweries)), // Add in favorite property based on favorites
-            tap(breweries => this.breweries.next(breweries)) // Emit breweries to observable
+                return this.getData(page).pipe(
+                    expand(response => {
+                        // Calculate loading percentage and update progress
+                        const totalPages = Math.ceil(+meta.total / this.perPage);
+                        const progress = Math.round(Math.min((page / totalPages) * 100, 100));
+                        this.loadingProgress.next(progress);
+
+                        if (response.length === this.perPage) {
+                            page = page + 1;
+                            return this.getData(page);
+                        }
+
+                        return EMPTY;
+                    }), // Get all paginated data
+                    reduce((acc, current) => acc.concat(current), [] as Brewery[]), // Build array of breweries
+                    map(breweries => this.buildFavorites(breweries)), // Add in favorite property based on favorites
+                    tap(breweries => {
+                        this.loadingProgress.next(100); // Set loading percentage to 100
+                        this.breweries.next(breweries); // Emit breweries to observable
+                    })
+                );
+            })
         );
     }
 

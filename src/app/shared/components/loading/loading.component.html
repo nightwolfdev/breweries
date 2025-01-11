@@ -1,4 +1,4 @@
-<div class="margin-top: 2rem; text-center">
-    <clr-spinner [clrInline]="true">{{ text }}...</clr-spinner>
-    <span>{{ text }}...</span>
+<div style="margin-top: 2rem; width: 200px">
+    <div style="margin-bottom: 0.5rem">Brewing, please wait...</div>
+    <clr-progress-bar [clrValue]="loadingProgress" clrLabeled></clr-progress-bar>
 </div>

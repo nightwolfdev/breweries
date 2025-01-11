@@ -183,3 +183,24 @@ a:not(.btn, .nav-link, .dropdown-item, .alert-action, .badge, .clr-treenode-link
 .clr-select {
     width: 100%
 }
+
+.progress > progress {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    &::-moz-progress-bar {
+        background-color: $alloy-orange;
+    }
+
+    &::-webkit-progress-bar {
+        background-color: $white; 
+    }
+
+    &::-webkit-progress-value {
+        background-color: $alloy-orange;
+    }
+
+    background-color: $white;
+    color: $alloy-orange;
+}

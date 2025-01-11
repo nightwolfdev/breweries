@@ -20,6 +20,12 @@ export interface Brewery {
     website_url: string;
 }
 
+export interface Meta {
+    page: string;
+    per_page: string;
+    total: string;
+}
+
 export interface SearchCriteria {
     brewery_type?: string;
     city?: string;
